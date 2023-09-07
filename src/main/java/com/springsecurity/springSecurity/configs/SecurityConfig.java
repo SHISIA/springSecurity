@@ -6,7 +6,6 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -25,8 +24,11 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    @Autowired
-    private RsaKeyProperties rsaKeys;
+    private final RsaKeyProperties rsaKeys;
+
+    public SecurityConfig(RsaKeyProperties rsaKeys) {
+        this.rsaKeys = rsaKeys;
+    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -35,7 +37,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .anyRequest().authenticated()
                 )
-//                .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
+                .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
                 .httpBasic(Customizer.withDefaults())
                 .formLogin(Customizer.withDefaults());
         return http.build();
@@ -45,7 +47,7 @@ public class SecurityConfig {
     public InMemoryUserDetailsManager user(){
         return new InMemoryUserDetailsManager(
                 User.withUsername("shisia")
-                        .password("{noop}secret")
+                        .password("{noop}password")
                         .authorities("read")
                         .build()
         );
