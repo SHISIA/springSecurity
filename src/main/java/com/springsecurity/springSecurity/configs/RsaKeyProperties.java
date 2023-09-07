@@ -7,6 +7,6 @@ import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 
 @ConfigurationProperties(prefix="rsa")
-@PropertySource("file:src/main/resources/application.properties")
+@PropertySource("classpath:application.properties")
 public record RsaKeyProperties(RSAPublicKey publicKey,RSAPrivateKey privateKey){
 }
